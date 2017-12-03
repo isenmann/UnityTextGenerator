@@ -17,3 +17,7 @@ Set "Available Letters" in the script to the TextObjects gameobject:
 If the letters have some prefix or postfix in their name, then you have to set it in the script, too. The script is just looking for the letter itself in the name. So if you press an "A", then the script is looking for the "prefix + A + postfix" in the name of the gameobject.
 
 ![alt-text](https://github.com/isenmann/UnityTextGenerator/raw/master/Screenshot/textobjects_2.png "editor screenshots")
+
+
+## Hints
+If you change anything on the entered text, the script will delete all the letters and rendered all letters again. The script can be disabled after the usage, so it's not executed during runtime.
