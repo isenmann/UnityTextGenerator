@@ -24,44 +24,73 @@ public class TextGenerator : MonoBehaviour
 	
 	void Update ()
     {
-        if (this.OldString != this.TextToBeRendered.Trim() || this.SpaceBetweenLetters != this.OldSpaceBetweenLetters)
+        if (this.OldString == this.TextToBeRendered.Trim() &&
+            this.SpaceBetweenLetters == this.OldSpaceBetweenLetters)
         {
-            this.OldSpaceBetweenLetters = this.SpaceBetweenLetters;
-            this.OldString = this.TextToBeRendered;
-            this.GenerateText();
+            return;
         }
-	}
 
-    void GenerateText()
+        this.OldSpaceBetweenLetters = this.SpaceBetweenLetters;
+        this.OldString = this.TextToBeRendered;
+        this.GenerateText();
+    }
+
+    private void GenerateText()
     {
         for (int i = this.transform.childCount - 1; i >= 0; i--)
         {
             DestroyImmediate(this.transform.GetChild(i).gameObject);
         }
 
-        char[] characters = this.TextToBeRendered.ToCharArray();
-        int count = 0;
+        var characters = this.TextToBeRendered.ToCharArray();
 
         foreach (var character in characters)
         {
             Transform letter = null;
-            foreach (var prefix in this.Prefix)
+
+            if (this.Prefix.Length > 0)
             {
-                letter = AvailableLetters.transform.Find(prefix + character.ToString().ToUpper() + this.Postfix);
-                if (letter != null)
+                foreach (var prefix in this.Prefix)
                 {
-                    break;
+                    letter = this.AvailableLetters.transform.Find(prefix + character + this.Postfix);
+                    if (letter != null)
+                    {
+                        break;
+                    }
                 }
             }
-
-            if (letter != null)
+            else
             {
-                GameObject renderedLetter = Instantiate(letter.gameObject, this.transform.position + (Vector3.right * this.SpaceBetweenLetters) * count, this.transform.rotation);
-                renderedLetter.SetActive(true);
-                renderedLetter.transform.parent = this.transform;
+                letter = this.AvailableLetters.transform.Find(character + this.Postfix);
             }
 
-            count++;
+            if (letter == null)
+            {
+                continue;
+            }
+
+            GameObject newLetterToRender = null;
+
+            if (this.transform.childCount > 0)
+            {
+                Vector3 position = this.transform.GetChild(this.transform.childCount - 1).position;
+                Collider colliderPrevious = this.transform.GetChild(this.transform.childCount - 1).gameObject.GetComponent<Collider>();
+
+                newLetterToRender = Instantiate(letter.gameObject, this.transform.position, this.transform.rotation);
+                newLetterToRender.transform.SetParent(this.transform, true);
+                newLetterToRender.SetActive(true);
+
+                Collider colliderNext = newLetterToRender.gameObject.GetComponent<Collider>();
+                position.x = position.x + colliderPrevious.bounds.extents.x + colliderNext.bounds.extents.x + this.SpaceBetweenLetters;
+
+                newLetterToRender.transform.position = position;
+            }
+            else
+            {
+                newLetterToRender = Instantiate(letter.gameObject, this.transform.position + (Vector3.right * this.SpaceBetweenLetters), this.transform.rotation);
+                newLetterToRender.SetActive(true);
+                newLetterToRender.transform.SetParent(this.transform, true);
+            }
         }
     }
 }
