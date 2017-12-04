@@ -9,6 +9,7 @@ I used the letters from the Unity Asset Store package "Simple Icons" (https://ww
 ## Usage
 
 Create an empty gameobject (TextToVisualize) and attach the TextGenerator script to it. Generate a second empty gameobject (TextObjects) and add all the letters and numbers as children to it. Make sure that your letters and numbers gameobjects have BoxCollider attached. Like you see in the screenshot:
+
 ![alt-text](https://github.com/isenmann/UnityTextGenerator/raw/master/Screenshot/textobjects.png "editor screenshots")
 
 Set "Available Letters" in the script to the TextObjects gameobject:
